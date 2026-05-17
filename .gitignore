@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Virtual Environment
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Dataset files
+*.csv
+
+# Models
+*.pkl
+*.joblib
+
+# Logs
+*.log
+
+# VS Code
+.vscode/
+
+# Mac files
+.DS_Store
+
+# Environment variables
+.env
