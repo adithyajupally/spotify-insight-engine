@@ -2,7 +2,9 @@
 
 > End-to-End Data Science & Machine Learning project using the Spotify Tracks Dataset.
 
----
+
+## Live App: https://spotify-insight-engine.streamlit.app/
+
 
 ## 🚀 Project Overview
 
