@@ -149,7 +149,7 @@ def normal_recommendation(song_name, top_n):
     temp_df = df_rec.copy()
     temp_df["similarity_score"] = sim_scores
     temp_df = temp_df[temp_df.index != idx]
-    temp_df = temp_df[temp_df["popularity"] >= 0.75]
+    temp_df = temp_df[temp_df["popularity"] >= 0.65]
     temp_df = temp_df.sort_values("similarity_score", ascending=False)
     temp_df = temp_df.drop_duplicates(subset="track_name")
     result = temp_df[["track_name", "artists", "track_genre", "popularity", "similarity_score"]].head(top_n).reset_index(drop=True)
@@ -164,14 +164,14 @@ def cluster_recommendation(song_name, top_n):
     cluster_label = matches["cluster"].values[0]
     cluster_songs = df_cluster[df_cluster["cluster"] == cluster_label]
     cluster_songs = cluster_songs[cluster_songs["track_name"].str.lower() != song_name.strip().lower()]
-    cluster_songs = cluster_songs[cluster_songs["popularity"] >= 0.75]
+    cluster_songs = cluster_songs[cluster_songs["popularity"] >= 0.65]
     cluster_songs = cluster_songs.drop_duplicates(subset="track_name")
     top_songs = cluster_songs.sort_values("popularity", ascending=False).head(top_n)[["track_name", "artists", "track_genre", "popularity"]].reset_index(drop=True)
     top_songs.index += 1
     return top_songs, cluster_label
 
 
-def hybrid_recommendation(song_name, top_n, min_popularity=0.75, w_popularity=0.5, w_similarity=0.3, w_cluster=0.2):
+def hybrid_recommendation(song_name, top_n, min_popularity=0.65, w_popularity=0.5, w_similarity=0.3, w_cluster=0.2):
     cosine_recs = normal_recommendation(song_name, top_n * 2)
     if cosine_recs is None:
         return None
@@ -247,7 +247,7 @@ if page == "📊 Dashboard":
     c1, c2, c3, c4 = st.columns(4)
     c1.metric("🎵 Total Songs",   f"{len(df):,}")
     c2.metric("🎼 Genres",        f"{df['track_genre'].nunique()}")
-    c3.metric("🔥 Hit Songs",     f"{(df['popularity'] >= 0.75).sum():,}")
+    c3.metric("🔥 Hit Songs",     f"{(df['popularity'] >= 0.65).sum():,}")
     c4.metric("⭐ Avg Popularity", f"{df['popularity'].mean():.3f}")
 
     st.markdown("---")
@@ -295,7 +295,7 @@ if page == "📊 Dashboard":
 # ══════════════════════════════════════════════════════════════════════════════
 elif page == "🎯 Hit Predictor":
     st.title("🎯 Hit Song Predictor")
-    st.markdown("Enter audio features. The Random Forest model returns the hit probability (popularity ≥ 0.75).")
+    st.markdown("Enter audio features. The Random Forest model returns the hit probability (popularity ≥ 0.65).")
     st.markdown("---")
 
     if hit_model is None:
@@ -303,16 +303,16 @@ elif page == "🎯 Hit Predictor":
     else:
         col1, col2 = st.columns(2)
         with col1:
-            danceability     = st.slider("💃 Danceability",     0.0,   1.0,  0.65, 0.01)
-            energy           = st.slider("⚡ Energy",            0.0,   1.0,  0.70, 0.01)
-            loudness         = st.slider("🔊 Loudness (dB)",   -60.0,  0.0, -5.0,  0.5)
+            danceability     = st.slider("💃 Danceability",     0.0,   1.0,  0.82, 0.01)
+            energy           = st.slider("⚡ Energy",            0.0,   1.0,  0.88, 0.01)
+            loudness         = st.slider("🔊 Loudness (dB)",   -60.0,  0.0, -4.5,  0.5)
             speechiness      = st.slider("🗣️ Speechiness",      0.0,   1.0,  0.05, 0.01)
             acousticness     = st.slider("🎸 Acousticness",     0.0,   1.0,  0.10, 0.01)
         with col2:
             instrumentalness = st.slider("🎹 Instrumentalness", 0.0,   1.0,  0.00, 0.01)
-            liveness         = st.slider("🎤 Liveness",          0.0,   1.0,  0.12, 0.01)
-            valence          = st.slider("😊 Valence",           0.0,   1.0,  0.65, 0.01)
-            tempo            = st.slider("🥁 Tempo (BPM)",      50.0, 220.0, 120.0, 1.0)
+            liveness         = st.slider("🎤 Liveness",          0.0,   1.0,  0.15, 0.01)
+            valence          = st.slider("😊 Valence",           0.0,   1.0,  0.80, 0.01)
+            tempo            = st.slider("🥁 Tempo (BPM)",      50.0, 220.0, 128.0, 1.0)
             duration_mins    = st.slider("⏱️ Duration (mins)",   0.5,   8.0,  3.5,  0.1)
 
         if st.button("🎵 Predict Hit Probability", type="primary"):
@@ -323,7 +323,7 @@ elif page == "🎯 Hit Predictor":
                 "valence": valence, "tempo": tempo, "duration_mins": duration_mins,
             }
             prob  = predict_hit_probability(song_features)
-            label = "🔥 HIT" if prob >= 0.5 else "❌ Not a Hit"
+            label = "🔥 HIT" if prob >= 0.3 else "❌ Not a Hit"
 
             st.markdown("---")
             m1, m2 = st.columns(2)
@@ -336,7 +336,7 @@ elif page == "🎯 Hit Predictor":
                 title={"text": "Hit Probability (%)"},
                 gauge={
                     "axis": {"range": [0, 100]},
-                    "bar":  {"color": "#1DB954" if prob >= 0.5 else "#e63946"},
+                    "bar":  {"color": "#1DB954" if prob >= 0.3 else "#e63946"},
                     "steps": [
                         {"range": [0,  50], "color": "#ffddd2"},
                         {"range": [50, 100], "color": "#d4edda"},
