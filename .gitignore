@@ -1,29 +1,37 @@
 # Python
 __pycache__/
-*.py[cod]
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
 
-# Virtual Environment
+# Virtual environments
+.venv/
 venv/
 env/
 
 # Jupyter
 .ipynb_checkpoints/
+*.ipynb_checkpoints
 
-# Dataset files
-*.csv
+# Data (large files — commit cleaned_spotify.csv only if small enough)
+data/dataset.csv
 
-# Models
-*.pkl
-*.joblib
+# Models (generated artefacts — do not commit binaries to git)
+models/*.pkl
 
-# Logs
-*.log
+# Streamlit
+.streamlit/
 
-# VS Code
-.vscode/
-
-# Mac files
+# OS
 .DS_Store
+Thumbs.db
 
-# Environment variables
-.env
+# IDE
+.vscode/
+.idea/
+*.swp
