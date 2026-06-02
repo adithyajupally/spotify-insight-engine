@@ -29,21 +29,14 @@ spotify-insight-engine/
 ├── models/
 │   ├── hit_predictor.pkl
 │   └── scaler.pkl
-│
-├── visuals/
-│   ├── popularity_distribution.png
-│   ├── correlation_heatmap.png
-│   ├── model_comparison.png
-│   ├── feature_importance.png
-│   ├── shap_summary.png
-│   ├── mood_map.html
-│   ├── pca_clusters.html
-│   └── tsne_clusters.html
+│   └── features_columns.pkl
+│   └── kmeans.pkl
+│   
 │
 ├── app/
 │   └── streamlit_app.py
 │
-├── spotify-insight-engine.ipynb
+├── analysis.ipynb
 ├── requirements.txt
 └── README.md
 ```
